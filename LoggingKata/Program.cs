@@ -46,15 +46,18 @@ namespace LoggingKata
             ITrackable farPointA = null;//var farPointA = new TacoBell(); <-this initializes what will be the first part of answer
             ITrackable farPointB = null;//var farPointB = new TacoBell(); <- second answer
             double farDistance = 0 ;// initializes answer
+            ITrackable cloPointA = null;
+            ITrackable cloPointB = null;
+            double cloDistance = 1000000; // needs to be initiallized as something large, so it will be reduced by loops.
             for (int i = 0; i < locations.Length; i++)
             {
                 //pointA = new TacoBell();
                 pointA = locations[i];
                 var pointAGeo = new GeoCoordinate(pointA.Location.Latitude, pointA.Location.Longitude);
 
-                for (int z = i; z < (locations.Length-i); z++)
+                for (int z = i + 1 ; z < (locations.Length-i); z++) // The i keeps the loop from running same thing twice.
                 {
-                    //pointB = new TacoBell();
+                    //pointB = new TacoBell(); dummy code, 
                     pointB = locations[ z - i ];
                     var pointBGeo = new GeoCoordinate(pointB.Location.Latitude, pointB.Location.Longitude);
                     distance = pointAGeo.GetDistanceTo(pointBGeo); //found online, outputs in Meters
@@ -64,12 +67,22 @@ namespace LoggingKata
                         farPointA = pointA;
                         farPointB = pointB;
                     }
+                    // I also want to find the closest distance. Went back up and made new variables.
+                    if ((cloDistance > distance) && (distance != 0)) // "distance != 0" prevents duplicate entries in list from showing up
+                    {   
+                        cloDistance = distance;
+                        cloPointA = pointA;
+                        cloPointB = pointB;
+                    }
                 }
 
             }
             Console.WriteLine($"The two taco bells that are furthest apart are the {farPointA.Name} location and the {farPointB.Name} location.");
             Console.WriteLine($"They are {farDistance/1000} kilometers apart.");
             Console.WriteLine($"That's {farDistance / 10000*6.2} miles.");//because america
+
+            Console.WriteLine($"The two taco bells that are closest to each other are the {cloPointA.Name} location and the {cloPointB.Name} location.");
+            Console.WriteLine($"They're only {cloDistance / 10000 * 6.2} miles apart.");
             // Create a new corA Coordinate with your locA's lat and long
 
             // Now, do another loop on the locations with the scope of your first loop, so you can grab the "destination" location (perhaps: `locB`)
